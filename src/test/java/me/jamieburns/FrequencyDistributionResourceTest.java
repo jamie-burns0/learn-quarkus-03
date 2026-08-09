@@ -18,10 +18,12 @@ class FrequencyDistributionResourceTest {
     @Test
     void testFdEndpoint() {
         given()
-          .when().get("/fd")
-          .then()
-             .statusCode(200)
-             .body(matchesPattern("^\\{\\d+=\\d+(, \\d+=\\d+)*\\}$"));
+            .when().get("/fd")
+            .then()
+            .statusCode(200)
+            .body(
+                matchesPattern("^\\[FrequencyCount\\[n=\\d+, f=\\d+](, FrequencyCount\\[n=\\d+, f=\\d+])*]$")
+            );
     }
 
     @Test
@@ -35,32 +37,7 @@ class FrequencyDistributionResourceTest {
                 4, 1
         );
 
-        assertEquals(expected, service.toFrequencyDistribution(input));
-    }
-
-    @Test
-    void testFdEndpointWithStubbedRandomService() {
-        OneHundredRandomIntegersService stubRandomService = new OneHundredRandomIntegersService() {
-            @Override
-            List<Integer> createRandomIntegersList() {
-                return List.of(3, 1, 2, 1, 3, 3, 4);
-            }
-        };
-
-        FrequencyDistributionResource resource = new FrequencyDistributionResource(
-                new FrequencyDistributionService(),
-                stubRandomService
-        );
-
-        Response response = resource.fd();
-
-        assertEquals(200, response.getStatus());
-        assertEquals(Map.of(
-                1, 2,
-                2, 1,
-                3, 3,
-                4, 1
-        ), response.getEntity());
+        assertEquals(expected, service.toFrequencyDistributionSortedByN(input));
     }
 
     @Test
@@ -76,11 +53,25 @@ class FrequencyDistributionResourceTest {
         Response response = resource.fd();
 
         assertEquals(200, response.getStatus());
-        assertEquals(Map.of(
-                1, 2,
-                2, 1,
-                3, 3,
-                4, 1
+        assertEquals(List.of(
+            new FrequencyDistributionService.FrequencyCount(3, 3),
+            new FrequencyDistributionService.FrequencyCount(1, 2),
+            new FrequencyDistributionService.FrequencyCount(2, 1),
+            new FrequencyDistributionService.FrequencyCount(4, 1)
         ), response.getEntity());
+    }
+
+    @Test
+    void testSortedFdEndpointWithFixedList() {
+        FrequencyDistributionService service = new FrequencyDistributionService();
+        List<Integer> input = List.of(3, 1, 2, 1, 1, 3, 3, 4, 4);
+        List<FrequencyDistributionService.FrequencyCount> expected = List.of(
+            new FrequencyDistributionService.FrequencyCount(1, 3),
+            new FrequencyDistributionService.FrequencyCount(3, 3),
+            new FrequencyDistributionService.FrequencyCount(4, 2),
+            new FrequencyDistributionService.FrequencyCount(2, 1)
+        );
+
+        assertEquals(expected, service.toFrequencyDistributionSortedByF(input));
     }
 }

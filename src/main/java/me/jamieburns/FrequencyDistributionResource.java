@@ -22,7 +22,18 @@ public class FrequencyDistributionResource {
     public Response fd() {
         var r = Response
                 .ok()
-                .entity(fdService.toFrequencyDistribution(randomService.createRandomIntegersList()))
+                .entity(fdService.toFrequencyDistributionSortedByF(randomService.createRandomIntegersList()))
+                .build();
+        return r;
+    }
+
+    @GET
+    @Path("/sorted")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response fdSorted() {
+        var r = Response
+                .ok()
+                .entity(fdService.toFrequencyDistributionSortedByF(randomService.createRandomIntegersList()))
                 .build();
         return r;
     }
