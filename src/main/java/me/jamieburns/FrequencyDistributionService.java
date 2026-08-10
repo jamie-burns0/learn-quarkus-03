@@ -1,8 +1,9 @@
 package me.jamieburns;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,20 +11,24 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class FrequencyDistributionService {
 
-    public record FrequencyCount(int n, int f) {}
+    public record Frequency(int n, int f) {}
 
-    Map<Integer,Integer> toFrequencyDistributionSortedByN(List<Integer> list) {
-        return list.stream().collect(
+    List<Frequency> toFrequencyDistributionSortedByN(List<Integer> list) {
+        var map = list.stream().collect(
             Collectors.groupingBy(
-                n -> n,
-                TreeMap::new,
+                Function.identity(),
+                HashMap::new,
                 Collectors.summingInt(n -> 1)
             ));
+
+        return map.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> new Frequency(entry.getKey(), entry.getValue()))
+            .toList();
     }
 
-    List<FrequencyCount> toFrequencyDistributionSortedByF(List<Integer> list) {
-        return toFrequencyDistributionSortedByN(list).entrySet().stream()
-            .map(entry -> new FrequencyCount(entry.getKey(), entry.getValue()))
+    List<Frequency> toFrequencyDistributionSortedByF(List<Integer> list) {
+        return toFrequencyDistributionSortedByN(list).stream()
             .sorted((left, right) -> {
                 int byFrequencyDesc = Integer.compare(right.f(), left.f());
                 if (byFrequencyDesc != 0) {
