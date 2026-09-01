@@ -11,8 +11,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class FrequencyDistributionService {
 
-    public record Frequency(int n, int f) {}
-
     List<Frequency> toFrequencyDistributionSortedByN(List<Integer> list) {
         var map = list.stream().collect(
             Collectors.groupingBy(

@@ -2,7 +2,6 @@ package me.jamieburns;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.ws.rs.core.Response;
-import me.jamieburns.FrequencyDistributionService.Frequency;
 import me.jamieburns.FrequencyDistributionResource.FrequencyListResponse;
 
 import org.junit.jupiter.api.Test;
