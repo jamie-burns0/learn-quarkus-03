@@ -2,12 +2,12 @@ package me.jamieburns;
 
 import java.util.List;
 
+import jakarta.inject.Named;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import me.jamieburns.FrequencyDistributionService.Frequency;
 
 @Path("/fd")
 public class FrequencyDistributionResource {
@@ -17,7 +17,7 @@ public class FrequencyDistributionResource {
     private FrequencyDistributionService fdService;
     private OneHundredRandomIntegersService randomService;
 
-    public FrequencyDistributionResource(FrequencyDistributionService fdService, OneHundredRandomIntegersService randomService) {
+    public FrequencyDistributionResource(@Named("FDS3") FrequencyDistributionService fdService, OneHundredRandomIntegersService randomService) {
         this.fdService = fdService;
         this.randomService = randomService;
     }
