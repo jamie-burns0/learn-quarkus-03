@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi9/openjdk-21:latest as builder
 
-WORKDIR /tmp/src
-COPY . /tmp/src
+COPY src /tmp
+WORKDIR /tmp
 
 RUN ls -lart
 
