@@ -1,0 +1,16 @@
+FROM quay.io/quarkus/ubi9-quarkus-mandrel-builder-image:jdk-21 as builder
+
+COPY --chown=quarkus . .
+
+RUN whoami && pwd && ls -lart .
+
+RUN mvn clean package -Dquarkus.native.enabled=true -Dquarkus.native.container-build=true
+
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+
+COPY --from=builder /home/default/target/*-runner ./application
+
+RUN whoami && pwd && ls -lart .
+
+CMD ["./application"]
