@@ -2,6 +2,7 @@ package me.jamieburns;
 
 import java.util.List;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import jakarta.inject.Named;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -12,12 +13,13 @@ import jakarta.ws.rs.core.Response;
 @Path("/fd")
 public class FrequencyDistributionResource {
 
+    @RegisterForReflection
     public record FrequencyListResponse(List<Frequency> frequencies) {}
 
     private FrequencyDistributionService fdService;
     private OneHundredRandomIntegersService randomService;
 
-    public FrequencyDistributionResource(@Named("FDS3") FrequencyDistributionService fdService, OneHundredRandomIntegersService randomService) {
+    public FrequencyDistributionResource(@Named("FDS4") FrequencyDistributionService fdService, OneHundredRandomIntegersService randomService) {
         this.fdService = fdService;
         this.randomService = randomService;
     }

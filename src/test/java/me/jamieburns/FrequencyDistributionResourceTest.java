@@ -35,7 +35,8 @@ class FrequencyDistributionResourceTest {
         return Stream.of(
             new FrequencyDistributionService1(),
             new FrequencyDistributionService2(),
-            new FrequencyDistributionService3()
+            new FrequencyDistributionService3(),
+            new FrequencyDistributionService4()
         );
     }
 
