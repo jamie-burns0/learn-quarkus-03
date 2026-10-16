@@ -1,0 +1,21 @@
+FROM registry.access.redhat.com/quarkus/mandrel-25-rhel9:25.0 as builder
+
+USER root
+RUN microdnf install -y maven
+
+USER 1001
+COPY --chown=quarkus . .
+
+RUN mvn clean package -Dquarkus.native.enabled=true -s /project/.m2/settings.xml
+
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+
+WORKDIR /app
+COPY --from=builder --chown=root:root --chmod=755 /project/target/*-runner ./application
+
+# RUN whoami && pwd && ls -lart .
+
+EXPOSE 8080
+
+CMD ["./application"]

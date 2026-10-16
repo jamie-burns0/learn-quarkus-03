@@ -1,0 +1,3 @@
+target/
+.git/
+.s2i/

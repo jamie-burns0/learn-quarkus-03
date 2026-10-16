@@ -60,3 +60,15 @@ If you want to learn more about building native executables, please consult <htt
 Easily start your REST Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+## OpenShift builds
+
+All build strategies live on `main`; no per-strategy branches are needed.
+
+| Strategy | Files | How to run |
+|---|---|---|
+| s2i (in-cluster) | `.s2i/environment`, `openshift/buildconfig-s2i.yaml` | `oc apply -f openshift/buildconfig-s2i.yaml && oc start-build learn-quarkus-03-s2i` |
+| Docker, JVM (in-cluster) | `openshift/Dockerfile.jvm`, `openshift/buildconfig-docker-jvm.yaml` | `oc apply -f openshift/buildconfig-docker-jvm.yaml && oc start-build learn-quarkus-03-docker-jvm` |
+| Docker, native (local podman) | `openshift/Dockerfile.native`, `openshift/build-native.sh` | `openshift/build-native.sh` (set `TLS_VERIFY=false` for a self-signed registry cert) |
+
+The native build runs locally because the cluster does not support the multi-stage Mandrel build.
