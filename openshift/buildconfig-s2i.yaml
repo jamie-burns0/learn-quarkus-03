@@ -1,20 +1,26 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: learn-quarkus-03
+---
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  name: learn-quarkus-03-s2i
+  name: learn-quarkus-03
 spec:
   source:
     type: Git
     git:
-      uri: https://github.com/jamie-burns0/learn-quarkus-03.git
+      uri: git@github.com:jamie-burns0/learn-quarkus-03.git
       ref: main
+    sourceSecret:
+      name: github-ssh
   strategy:
     type: Source
     sourceStrategy:
       from:
-        kind: ImageStreamTag
-        namespace: openshift
-        name: java:openjdk-21-ubi9
+        kind: DockerImage
+        name: registry.access.redhat.com/ubi9/openjdk-21
   output:
     to:
       kind: ImageStreamTag
