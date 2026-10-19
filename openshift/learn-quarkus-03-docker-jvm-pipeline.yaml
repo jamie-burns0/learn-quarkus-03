@@ -1,0 +1,69 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: learn-quarkus-03-docker-jvm
+  namespace: jamie-burns0-dev
+spec:
+  workspaces:
+  - name: workspace
+  params:
+  - name: git-url
+    type: string
+    description: git url of our project
+    default: https://github.com/jamie-burns0/learn-quarkus-03.git
+  - name: image
+    type: string
+    description: name of our image
+    default: default-route-openshift-image-registry.apps.rm2.thpm.p1.openshiftapps.com/jamie-burns0-dev/learn-quarkus-03-docker-native:latest
+  - name: dockerfile
+    type: string
+    description: path to our dockerfile
+    default: openshift/Dockerfile.jvm
+  tasks:
+  - name: fetch
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: git-clone
+      - name: namespace
+        value: openshift-pipelines
+    workspaces:
+    - name: output
+      workspace: workspace
+    # runAfter:
+    # - ...  
+    params:
+    - name: DELETE_EXISTING
+      value: "true"
+    - name: VERBOSE
+      value: "false"
+    - name: SSL_VERIFY
+      value: "true"
+    - name: URL
+      value: $(params.git-url)
+    - name: REVISION
+      value: main
+  - name: build
+    taskRef:
+      resolver: cluster
+      params:
+      - name: kind
+        value: task
+      - name: name
+        value: buildah
+      - name: namespace
+        value: openshift-pipelines
+    workspaces:
+    - name: source
+      workspace: workspace
+    runAfter:
+    - fetch
+    params:
+    - name: IMAGE
+      value: $(params.image)
+    - name: DOCKERFILE
+      value: $(params.dockerfile)
+
