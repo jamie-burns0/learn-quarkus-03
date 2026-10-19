@@ -14,7 +14,7 @@ spec:
   - name: image
     type: string
     description: name of our image
-    default: default-route-openshift-image-registry.apps.rm2.thpm.p1.openshiftapps.com/jamie-burns0-dev/learn-quarkus-03-docker-native:latest
+    default: default-route-openshift-image-registry.apps.rm2.thpm.p1.openshiftapps.com/jamie-burns0-dev/learn-quarkus-03-docker-jvm:latest
   - name: dockerfile
     type: string
     description: path to our dockerfile
