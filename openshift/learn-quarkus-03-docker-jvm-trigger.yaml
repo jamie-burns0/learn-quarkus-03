@@ -1,0 +1,91 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: learn-quarkus-03-docker-jvm
+  namespace: jamie-burns0-dev
+spec:
+  params:
+  - name: git-repo-url
+    value: "$(body.repository.html_url)"
+  - name: git-repo-name
+    value: "$(body.repository.name)"
+  - name: git-revision
+    value: "$(body.head_commit.id)"
+
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: learn-quarkus-03-docker-jvm
+  namespace: jamie-burns0-dev
+spec:
+  params:
+  - name: git-repo-url
+    description: The git repository url
+  - name: git-repo-name
+    description: the name of the repository
+    default: "not provided"
+  - name: git-revision
+    description: The git revision
+    default: main
+  - name: message
+    description: The message to print
+    default: This is the default message
+  - name: contenttype
+    description: The Content-Type of the event
+    default: text/plain
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1
+    kind: PipelineRun
+    metadata:
+      generateName: learn-quarkus-03-docker-jvm-run-
+    spec:
+      pipelineRef:
+        name: learn-quarkus-03-docker-jvm
+      params:
+      - name: git-url
+        value: $(tt.params.git-repo-url)
+      - name: git-revision
+        value: $(tt.params.git-revision)
+      workspaces:
+      - name: workspace
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            storageClassName: gp3
+            volumeMode: Filesystem
+
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: Trigger
+metadata:
+  name: learn-quarkus-03-docker-jvm
+spec:
+  interceptors:
+  - ref:
+      name: "github"
+    params:
+    - name: "secretRef"
+      value: 
+        secretName: github-webhook-secret
+        secretKey: secretToken
+    - name: "eventTypes"
+      value: ["push"]
+  bindings:
+  - ref: learn-quarkus-03-docker-jvm
+  template:
+    ref: learn-quarkus-03-docker-jvm
+
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: learn-quarkus-03-docker-jvm
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - triggerRef: learn-quarkus-03-docker-jvm
