@@ -88,10 +88,22 @@ spec:
     params:
     - name: SCRIPT
       value: |
-        oc create deployment learn-quarkus-03-docker-jvm --image=$(tasks.build.results.IMAGE_URL)@$(tasks.build.results.IMAGE_DIGEST) --dry-run=client -o yaml | oc apply -f -
+        oc create deployment learn-quarkus-03-docker-jvm \
+          --image=$(tasks.build.results.IMAGE_URL)@$(tasks.build.results.IMAGE_DIGEST) \
+          --dry-run=client -o yaml | oc apply -f -
+        oc set probe deploy/learn-quarkus-03-docker-jvm --readiness \
+          --get-url=http://:8080/q/health/ready \
+          --initial-delay-seconds=2 --period-seconds=30
+        oc set probe deploy/learn-quarkus-03-docker-jvm --liveness \
+          --get-url=http://:8080/q/health/live \
+          --initial-delay-seconds=2 --period-seconds=30          
         oc rollout status deploy/learn-quarkus-03-docker-jvm
-        oc create service clusterip learn-quarkus-03-docker-jvm --tcp=8080:8080,8443:8443 --dry-run=client -o yaml | oc apply -f -
-        oc expose svc learn-quarkus-03-docker-jvm --dry-run=client -o yaml | oc apply -f -
-        oc create route edge learn-quarkus-03-docker-jvm-secure --service=learn-quarkus-03-docker-jvm --dry-run=client -o yaml | oc apply -f -
+        oc create service clusterip learn-quarkus-03-docker-jvm \
+          --tcp=8080:8080,8443:8443 --dry-run=client -o yaml | oc apply -f -
+        oc expose svc learn-quarkus-03-docker-jvm \
+          --dry-run=client -o yaml | oc apply -f -
+        oc create route edge learn-quarkus-03-docker-jvm-secure \
+          --service=learn-quarkus-03-docker-jvm \
+          --dry-run=client -o yaml | oc apply -f -
     
     
