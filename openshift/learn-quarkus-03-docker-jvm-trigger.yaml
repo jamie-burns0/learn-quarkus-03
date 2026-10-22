@@ -49,15 +49,8 @@ spec:
         value: $(tt.params.git-revision)
       workspaces:
       - name: workspace
-        volumeClaimTemplate:
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
-            storageClassName: gp3
-            volumeMode: Filesystem
+        persistentVolumeClaim:
+          claimName: learn-quarkus-03-docker-jvm-pipeline-pvc
 
 ---
 apiVersion: triggers.tekton.dev/v1beta1
