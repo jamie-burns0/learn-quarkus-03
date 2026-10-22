@@ -10,9 +10,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 @ApplicationScoped
-@Named("FDS3")
+@Named(FrequencyDistributionService3.VERSION)
 final class FrequencyDistributionService3 implements FrequencyDistributionService {
 
+    public static final String VERSION = "FDS3";
+
+    public String version() {
+        return VERSION;
+    }
+    
 	@Override
 	public List<Frequency> toFrequencyDistributionSortedByN(List<Integer> values) {
 		var fd = toFrequencyDistribution(values);

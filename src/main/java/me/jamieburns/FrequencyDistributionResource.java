@@ -14,12 +14,15 @@ import jakarta.ws.rs.core.Response;
 public class FrequencyDistributionResource {
 
     @RegisterForReflection
-    public record FrequencyListResponse(List<Frequency> frequencies) {}
+    public record FrequencyListResponse(String version, List<Frequency> frequencies) {}
 
     private FrequencyDistributionService fdService;
     private OneHundredRandomIntegersService randomService;
 
-    public FrequencyDistributionResource(@Named("FDS4") FrequencyDistributionService fdService, OneHundredRandomIntegersService randomService) {
+    public FrequencyDistributionResource(
+        @Named(FrequencyDistributionService5.VERSION) FrequencyDistributionService fdService,
+        OneHundredRandomIntegersService randomService)
+    {
         this.fdService = fdService;
         this.randomService = randomService;
     }
@@ -30,6 +33,7 @@ public class FrequencyDistributionResource {
         return Response
             .ok()
             .entity(new FrequencyListResponse(
+                fdService.version(),
                 fdService.toFrequencyDistributionSortedByN(randomService.createRandomIntegersList())
             ))
             .build();
@@ -42,6 +46,7 @@ public class FrequencyDistributionResource {
         return Response
             .ok()
             .entity(new FrequencyListResponse(
+                fdService.version(),
                 fdService.toFrequencyDistributionSortedByF(randomService.createRandomIntegersList())
             ))
             .build();

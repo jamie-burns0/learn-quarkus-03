@@ -10,12 +10,18 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 @ApplicationScoped
-@Named("FDS1")
+@Named(FrequencyDistributionService1.VERSION)
 final class FrequencyDistributionService1 implements FrequencyDistributionService {
 
+    public static final String VERSION = "FDS1";
+
+    public String version() {
+        return VERSION;
+    }
+
     @Override
-    public List<Frequency> toFrequencyDistributionSortedByN(List<Integer> list) {
-        var map = list.stream().collect(
+    public List<Frequency> toFrequencyDistributionSortedByN(List<Integer> data) {
+        var map = data.stream().collect(
             Collectors.groupingBy(
                 Function.identity(),
                 HashMap::new,
@@ -29,8 +35,8 @@ final class FrequencyDistributionService1 implements FrequencyDistributionServic
     }
 
     @Override
-    public List<Frequency> toFrequencyDistributionSortedByF(List<Integer> list) {
-        return toFrequencyDistributionSortedByN(list).stream()
+    public List<Frequency> toFrequencyDistributionSortedByF(List<Integer> data) {
+        return toFrequencyDistributionSortedByN(data).stream()
             .sorted((left, right) -> {
                 int byFrequencyDesc = Integer.compare(right.f(), left.f());
                 if (byFrequencyDesc != 0) {

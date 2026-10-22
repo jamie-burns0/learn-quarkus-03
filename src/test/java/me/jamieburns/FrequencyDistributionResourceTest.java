@@ -36,7 +36,8 @@ class FrequencyDistributionResourceTest {
             new FrequencyDistributionService1(),
             new FrequencyDistributionService2(),
             new FrequencyDistributionService3(),
-            new FrequencyDistributionService4()
+            new FrequencyDistributionService4(),
+            new FrequencyDistributionService5()
         );
     }
 
@@ -81,11 +82,12 @@ class FrequencyDistributionResourceTest {
         Response response = resource.fd();
 
         assertEquals(200, response.getStatus());
-        assertEquals(new FrequencyListResponse(List.of(
-            new Frequency(1, 2),
-            new Frequency(2, 1),
-            new Frequency(3, 3),
-            new Frequency(4, 1)
+        assertEquals(new FrequencyListResponse(FrequencyDistributionService1.VERSION,
+            List.of(
+                new Frequency(1, 2),
+                new Frequency(2, 1),
+                new Frequency(3, 3),
+                new Frequency(4, 1)
         )), response.getEntity());
     }
 }

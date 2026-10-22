@@ -11,9 +11,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
 @ApplicationScoped
-@Named("FDS2")
+@Named(FrequencyDistributionService2.VERSION)
 final class FrequencyDistributionService2 implements FrequencyDistributionService {
 
+    public static final String VERSION = "FDS2";
+
+    public String version() {
+        return VERSION;
+    }
+    
     private static final Comparator<Map.Entry<Integer, Integer>> N_COMPARATOR_FN = Map.Entry.comparingByKey();
 
     private static final Comparator<Map.Entry<Integer, Integer>> F_COMPARATOR_FN = (left, right) -> {
